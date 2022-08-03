@@ -4,11 +4,12 @@
  * @Author: 阿鸿
  * @Date: 2022-07-18 07:21:32
  * @LastEditors: 阿鸿
- * @LastEditTime: 2022-07-23 16:12:06
+ * @LastEditTime: 2022-07-24 15:08:43
  */
 // 封装axios
 import { Toast } from 'antd-mobile'
 import axios, { AxiosError } from 'axios'
+import { getToken, hasToken } from './storage'
 
 const instance = axios.create({
   baseURL: 'http://geek.itheima.net/v1_0/',
@@ -19,6 +20,9 @@ const instance = axios.create({
 instance.interceptors.request.use(
   function (config) {
     // 在发送请求之前做些什么
+    if (hasToken()) {
+      config.headers!.Authorization = 'Bearer ' + getToken().token
+    }
     return config
   },
   function (error) {

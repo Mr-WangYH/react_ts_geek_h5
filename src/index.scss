@@ -6,8 +6,13 @@ body {
 
 html,
 body,
-#root {
+#root,
+.app {
   height: 100%;
+}
+
+div {
+  box-sizing: border-box;
 }
 
 p,
