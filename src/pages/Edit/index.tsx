@@ -4,7 +4,7 @@
  * @Author: 阿鸿
  * @Date: 2022-07-24 16:17:24
  * @LastEditors: 阿鸿
- * @LastEditTime: 2022-08-04 07:49:12
+ * @LastEditTime: 2022-08-05 07:41:54
  */
 import { getUserProfile, updataUserPhoto, updataUserProfile } from '@/store/actions/profile'
 import { useInitState } from '@/utils/hooks'
@@ -15,6 +15,7 @@ import { useDispatch } from 'react-redux'
 import { useHistory } from 'react-router-dom'
 import EditInput from './components/EditInput'
 import EditList from './components/EditList'
+import dayjs from 'dayjs'
 
 import styles from './index.module.scss'
 
@@ -43,7 +44,7 @@ const ProfileEdit = () => {
     type:"",
     visible:false
   })
-  
+  const [showBirthday,setShowBirthday] = useState(false)
   const {userProfile} = useInitState('profile',getUserProfile)
   
   const onCloseInput = () => {
@@ -53,6 +54,7 @@ const ProfileEdit = () => {
     })
   }
 
+  // 更新用户信息
   const onUpdataUserProfile = async(type:string,value:string) => {
     if(type === 'photo'){
       fileInputRef.current?.click()
@@ -73,7 +75,6 @@ const ProfileEdit = () => {
 
   // 选择图片
   const onFileChange = async(e:React.ChangeEvent<HTMLInputElement>) => {
-    console.log(e.target.files![0]);
     const formData = new FormData();
     formData.append('photo',e.target.files![0])
     await dispatch(updataUserPhoto(formData))
@@ -136,17 +137,19 @@ const ProfileEdit = () => {
             <Item arrow extra={userProfile.gender === 1 ? '女' : '男'} onClick={() => setUserList({type:'gender',visible:true})}>
               性别
             </Item>
-            <Item arrow extra={userProfile.birthday}>
+            <Item arrow extra={userProfile.birthday} onClick={() => setShowBirthday(true)}>
               生日
             </Item>
           </List>
 
           <DatePicker
-            visible={false}
+            visible={showBirthday}
             value={new Date()}
             title="选择年月日"
             min={new Date(1900, 0, 1, 0, 0, 0)}
             max={new Date()}
+            onCancel={() => setShowBirthday(false)}
+            onConfirm={(val) => onUpdataUserProfile('birthday',dayjs(val).format('YYYY-MM-DD'))}
           />
         </div>
 
